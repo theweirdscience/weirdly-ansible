@@ -1,0 +1,9 @@
+---
+
+- name: has java installed
+  become: yes
+  apt:
+    name: default-jdk
+    state: present
+    update_cache: yes
+

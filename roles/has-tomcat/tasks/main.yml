@@ -1,0 +1,49 @@
+---
+
+- name: add "tomcat" user group
+  become: yes
+  group:
+    name: tomcat
+    state: present
+
+- name: add "tomcat" user
+  become: yes
+  user:
+    name: tomcat
+    group: tomcat
+#    createhome: no
+#    system: yes
+#    shell: /sbin/nologin
+    state: present
+
+- name: unarchive tomcat to target
+  become: yes
+  unarchive:
+    src: ../assets/apache-tomcat-9.0.7.tar.gz
+    dest: /opt
+
+- name: set owner for extracted files
+  become: yes
+  file:
+    path: /opt/apache-tomcat-9.0.7
+    owner: tomcat
+    group: tomcat
+    mode: 0755
+    recurse: yes
+
+- name: symlink tomcat source files to /opt/apache-tomcat
+  become: yes
+  file:
+    src: /opt/apache-tomcat-9.0.7
+    dest: /opt/apache-tomcat
+    owner: tomcat
+    group: tomcat
+    state: link
+
+- name: create service
+  become: yes
+  copy:
+    src: ../assets/tomcat.service
+    dest: /etc/systemd/system/tomcat.service
+    mode: 0755
+  notify: reload tomcat deamon
