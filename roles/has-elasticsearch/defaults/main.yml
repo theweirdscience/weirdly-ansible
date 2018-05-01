@@ -1,0 +1,17 @@
+## variable defaults
+
+## download url:
+## https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz
+
+elasticsearch_service_name: "elasticsearch"
+elasticsearch_cluster_name: "cluster-a"
+elasticsearch_node_name: "{{ elasticsearch_cluster_name }}-node-1"
+elasticsearch_version: "6.2.4"
+elasticsearch_user: "elasticsearch"
+elasticsearch_group: "elasticsearch"
+elasticsearch_parent: "/opt"
+elasticsearch_path: "{{ elasticsearch_parent }}/elasticsearch"
+elasticsearch_data_dir: "/var/lib/elasticsearch"
+elasticsearch_log_dir: "/var/log/elasticsearch"
+elasticsearch_rest_port: "9200"
+elasticsearch_estp_port: "9300"

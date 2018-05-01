@@ -1,0 +1,21 @@
+# Systemd unit file for elasticsearch
+#
+# {{ ansible_managed }}
+
+[Unit]
+Description="ElasticSearch instance <{{ elasticsearch_service_name }}>"
+Documentation=http://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=forking
+ExecStart="{{ elasticsearch_path }}/start.sh"
+ExecStop="{{ elasticsearch_path }}/stop.sh"
+User={{ elasticsearch_user }}
+Group={{ elasticsearch_group }}
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+---
+
+- name: install ForgeRock OpenIG
+  copy:
+    src: "../files/IG-eval-{{ ig_version }}.war"
+    dest: "{{ tomcat_path }}/webapps/ig.war"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"

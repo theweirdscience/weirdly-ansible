@@ -1,24 +1,6 @@
 ---
 
-# systemctl enable tomcat
-- name: enable tomcat
-  become: yes
-  systemd:
-    name: tomcat
-    enabled: yes
-
-# systemctl start tomcat
-- name: restart tomcat
-  become: yes
-  systemd:
-    name: tomcat
+- name: restart service
+  service:
+    name: "{{ tomcat_service_name }}"
     state: restarted
-
-# systemctl daemon-reload
-- name: reload tomcat deamon
-  become: yes
-  systemd:
-    daemon_reload: yes
-    name: tomcat
-    state: reloaded
-

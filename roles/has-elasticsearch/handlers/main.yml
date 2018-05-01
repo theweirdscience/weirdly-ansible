@@ -1,0 +1,11 @@
+---
+
+- name: restart service
+  service:
+    name: "{{ elasticsearch_service_name }}"
+    state: restarted
+
+#- name: restart kibana service
+#  service:
+#    name: "{{ kibana_service_name }}"
+#    state: restarted

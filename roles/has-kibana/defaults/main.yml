@@ -1,0 +1,14 @@
+## variable defaults
+
+## download url:
+## https://artifacts.elastic.co/downloads/kibana/kibana-6.2.4-linux-x86_64.tar.gz
+
+kibana_service_name: "kibana"
+kibana_version: "6.2.4-linux-x86_64"
+kibana_user: "kibana"
+kibana_group: "kibana"
+kibana_parent: "/opt"
+kibana_path: "{{ kibana_parent }}/kibana"
+kibana_port: "5601"
+
+elasticsearch_url: "http://localhost:9200"

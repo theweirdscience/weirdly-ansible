@@ -1,0 +1,84 @@
+---
+
+- name: add user group
+  group:
+    name: "{{ elasticsearch_group }}"
+    state: present
+
+- name: add user
+  user:
+    name: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    state: present
+
+- name: unarchive tarball
+  unarchive:
+    src: "../files/elasticsearch-{{ elasticsearch_version }}.tar.gz"
+    dest: "{{ elasticsearch_parent }}"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+
+- name: set owner for extracted files
+  file:
+    path: "{{ elasticsearch_parent }}/elasticsearch-{{ elasticsearch_version }}"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    recurse: yes
+
+- name: symlink to desired path
+  file:
+    src: "{{ elasticsearch_parent }}/elasticsearch-{{ elasticsearch_version }}"
+    dest: "{{ elasticsearch_path }}"
+    state: "link"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    mode: 0755
+
+- name: create data and log directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    state: directory
+  with_items:
+    - "{{ elasticsearch_data_dir }}"
+    - "{{ elasticsearch_log_dir }}"
+
+- name: configure the service
+  template:
+    src: "elasticsearch.config.yml"
+    dest: "{{ elasticsearch_path }}/config/elasticsearch.yml"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+
+- name: add start/stop scripts
+  template:
+    src: "{{ item }}"
+    dest: "{{ elasticsearch_path }}/{{ item }}"
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    mode: 0755
+  with_items:
+    - start.sh
+    - stop.sh
+
+- name: set vm.max_map_count for runtime
+  command: "sysctl -w vm.max_map_count=262144"
+
+- name: set vm.max_map_count persistantly * requires a reboot
+  template:
+    src: "elasticsearch.sysctl.conf"
+    dest: "/etc/sysctl.d/20-elasticsearch.conf"
+
+- name: create systemd service
+  template:
+    src: "elasticsearch.service"
+    dest: "/etc/systemd/system/{{ elasticsearch_service_name }}.service"
+    mode: 0644
+
+- name: enable service
+  systemd:
+    name: "{{ elasticsearch_service_name }}.service"
+    enabled: yes
+    daemon_reload: yes
+  notify: restart service

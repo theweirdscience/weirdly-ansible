@@ -1,49 +1,64 @@
 ---
 
-- name: add "tomcat" user group
-  become: yes
+# installing tomcat https://www.rosehosting.com/blog/install-tomcat-9-on-an-ubuntu-16-04-vps/
+
+- name: add user group
   group:
-    name: tomcat
+    name: "{{ tomcat_group }}"
     state: present
 
-- name: add "tomcat" user
-  become: yes
+- name: add user
   user:
-    name: tomcat
-    group: tomcat
-#    createhome: no
-#    system: yes
-#    shell: /sbin/nologin
+    name: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
     state: present
 
-- name: unarchive tomcat to target
-  become: yes
+- name: unarchive tarball
   unarchive:
-    src: ../assets/apache-tomcat-9.0.7.tar.gz
-    dest: /opt
+    src: "../files/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "{{ tomcat_parent }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
 
 - name: set owner for extracted files
-  become: yes
   file:
-    path: /opt/apache-tomcat-9.0.7
-    owner: tomcat
-    group: tomcat
+    path: "{{ tomcat_parent }}/apache-tomcat-{{ tomcat_version }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
     mode: 0755
     recurse: yes
 
-- name: symlink tomcat source files to /opt/apache-tomcat
-  become: yes
+- name: symlink to desired path
   file:
-    src: /opt/apache-tomcat-9.0.7
-    dest: /opt/apache-tomcat
-    owner: tomcat
-    group: tomcat
-    state: link
-
-- name: create service
-  become: yes
-  copy:
-    src: ../assets/tomcat.service
-    dest: /etc/systemd/system/tomcat.service
+    src: "{{ tomcat_parent }}/apache-tomcat-{{ tomcat_version }}"
+    dest: "{{ tomcat_path }}"
+    state: "link"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
     mode: 0755
-  notify: reload tomcat deamon
+
+- name: configure server
+  template:
+    src: "server.xml"
+    dest: "{{ tomcat_path }}/conf/"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+
+- name: configure users
+  template:
+    src: "tomcat-users.xml"
+    dest: "{{ tomcat_path }}/conf/"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+
+- name: create systemd service
+  template:
+    src: "tomcat.service"
+    dest: "/etc/systemd/system/{{ tomcat_service_name }}.service"
+    mode: 0755
+
+- name: enable service
+  service:
+    name: "{{ tomcat_service_name }}.service"
+    enabled: yes
+  notify: restart service

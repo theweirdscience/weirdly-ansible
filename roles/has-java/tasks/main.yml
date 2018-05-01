@@ -3,7 +3,7 @@
 - name: has java installed
   become: yes
   apt:
-    name: default-jdk
+    name: openjdk-8-jdk
     state: present
     update_cache: yes
 

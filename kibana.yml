@@ -1,0 +1,8 @@
+---
+
+- name: make kibana
+  hosts: all
+  become: yes
+  roles:
+    - has-updates
+    - has-kibana

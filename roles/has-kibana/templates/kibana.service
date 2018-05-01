@@ -1,0 +1,18 @@
+# Systemd unit file for kibana
+#
+# {{ ansible_managed }}
+
+[Unit]
+Description="Kibana instance <{{ kibana_service_name }}>"
+Documentation=http://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart="{{ kibana_path }}/bin/kibana"
+User={{ kibana_user }}
+Group={{ kibana_group }}
+
+[Install]
+WantedBy=multi-user.target

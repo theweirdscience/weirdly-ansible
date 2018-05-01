@@ -1,0 +1,66 @@
+---
+
+- name: add user group
+  group:
+    name: "{{ kibana_group }}"
+    state: present
+
+- name: add user
+  user:
+    name: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    state: present
+
+- name: unarchive tarball
+  unarchive:
+    src: "../files/kibana-{{ kibana_version }}.tar.gz"
+    dest: "{{ kibana_parent }}"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+
+- name: set owner for extracted files
+  file:
+    path: "{{ kibana_parent }}/kibana-{{ kibana_version }}"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    recurse: yes
+
+- name: symlink to desired path
+  file:
+    src: "{{ kibana_parent }}/kibana-{{ kibana_version }}"
+    dest: "{{ kibana_path }}"
+    state: "link"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    mode: 0755
+
+- name: configure the service
+  template:
+    src: "kibana.config.yml"
+    dest: "{{ kibana_path }}/config/kibana.yml"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+
+- name: add start/stop scripts
+  template:
+    src: "{{ item }}"
+    dest: "{{ kibana_path }}/{{ item }}"
+    owner: "{{ kibana_user }}"
+    group: "{{ kibana_group }}"
+    mode: 0755
+  with_items:
+    - start.sh
+    - stop.sh
+
+- name: create systemd service
+  template:
+    src: "kibana.service"
+    dest: "/etc/systemd/system/{{ kibana_service_name }}.service"
+    mode: 0644
+
+- name: enable service
+  systemd:
+    name: "{{ kibana_service_name }}.service"
+    enabled: yes
+    daemon_reload: yes
+  notify: restart service

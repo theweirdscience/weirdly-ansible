@@ -1,0 +1,10 @@
+---
+
+- name: make open-ig
+  hosts: all
+  become: yes
+  roles:
+    - has-updates
+    - has-java
+    - has-tomcat
+    - has-open-ig

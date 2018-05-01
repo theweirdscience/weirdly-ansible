@@ -1,0 +1,9 @@
+## variable defaults
+
+ig_version: "5.5.0"
+
+## using the same tomcat_ variables as `has-tomcat` task for conpatibility
+tomcat_user: "tomcat"
+tomcat_group: "tomcat"
+tomcat_parent: "/opt"
+tomcat_path: "{{ tomcat_parent }}/tomcat"

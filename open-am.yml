@@ -2,9 +2,9 @@
 
 - name: make open-am
   hosts: all
-  remote_user: root
+  become: yes
   roles:
     - has-updates
     - has-java
     - has-tomcat
-#    - has-open-am
+    - has-open-am

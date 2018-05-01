@@ -1,3 +1,8 @@
 ---
 
-- name: ensure open-am is installed
+- name: install ForgeRock OpenAM
+  copy:
+    src: "../files/AM-eval-{{ am_version }}.war"
+    dest: "{{ tomcat_path }}/webapps/am.war"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"

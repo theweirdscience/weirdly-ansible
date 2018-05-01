@@ -1,0 +1,17 @@
+## variable defaults
+
+## download url:
+## http://archive.apache.org/dist/tomcat//tomcat-9/v9.0.7/bin/apache-tomcat-9.0.7.tar.gz"
+
+tomcat_service_name: "tomcat"
+tomcat_version: "9.0.7"
+tomcat_user: "tomcat"
+tomcat_group: "tomcat"
+tomcat_parent: "/opt"
+tomcat_path: "{{ tomcat_parent }}/tomcat"
+tomcat_admin_user: "admin"
+tomcat_admin_pass: "admin"
+tomcat_admin_port: "8005"
+tomcat_http_port: "8080"
+tomcat_https_port: "8443"
+tomcat_ajp_port: "8009"
