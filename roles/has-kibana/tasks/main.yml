@@ -41,17 +41,6 @@
     owner: "{{ kibana_user }}"
     group: "{{ kibana_group }}"
 
-- name: add start/stop scripts
-  template:
-    src: "{{ item }}"
-    dest: "{{ kibana_path }}/{{ item }}"
-    owner: "{{ kibana_user }}"
-    group: "{{ kibana_group }}"
-    mode: 0755
-  with_items:
-    - start.sh
-    - stop.sh
-
 - name: create systemd service
   template:
     src: "kibana.service"
