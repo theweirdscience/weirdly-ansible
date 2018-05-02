@@ -6,10 +6,14 @@ enable firewall security on the servers being provisioned because this relies on
 the chosen network infrastructure. Please be sure to configure and enable the firewalls for your 
 servers yourself.
 
-Once you've cloned this repository to your local machine you will need to run `make joinfiles` to stitch
-large files back together before running any of the vagrant commands or playbooks. GitHub has a 50MB limit
-on files in the repository so Kibana and OpenAM install files have been split into smaller files that need
-to be joined before they can be used.
+**This is important!**
+Once you've cloned this repository to your local machine you will need to run 
+```
+make joinfiles
+```
+to stitch large files back together before running any of the vagrant commands or playbooks. GitHub has a 
+50MB limit on files in the repository so Kibana and OpenAM install files have been split into smaller files 
+that need to be joined before they can be used.
 
 
 
